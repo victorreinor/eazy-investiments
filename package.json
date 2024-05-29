@@ -1,0 +1,27 @@
+{
+  "name": "eazy-investiments",
+  "version": "1.0.0",
+  "description": "Web Scrapping para coletar alguns dados de investimentos",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "commit": "git-cz"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/victorreinor/eazy-investiments.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/victorreinor/eazy-investiments/issues"
+  },
+  "homepage": "https://github.com/victorreinor/eazy-investiments#readme",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12"
+  },
+  "devDependencies": {
+    "git-cz": "^4.9.0"
+  }
+}
