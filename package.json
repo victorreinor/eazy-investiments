@@ -19,14 +19,13 @@
   },
   "homepage": "https://github.com/victorreinor/eazy-investiments#readme",
   "dependencies": {
-    "axios": "^1.7.2",
-    "cheerio": "^1.0.0-rc.12",
-    "iconv-lite": "^0.6.3",
-    "iso-8859-2": "^3.0.4",
-    "xlsx": "^0.18.5",
-    "xlsx-style": "^0.8.13"
+    "axios": "1.7.2",
+    "cheerio": "1.0.0-rc.12",
+    "iconv-lite": "0.6.3",
+    "iso-8859-2": "3.0.4",
+    "xlsx": "0.18.5"
   },
   "devDependencies": {
-    "git-cz": "^4.9.0"
+    "git-cz": "4.9.0"
   }
 }

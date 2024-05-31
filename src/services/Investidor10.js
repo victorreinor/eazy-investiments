@@ -1,11 +1,14 @@
-const env = require('./../../env.js')
 const axios = require('axios')
-const fs = require('fs');
-const { promisify } = require('util');
 const iconv = require('iconv-lite');
-const Cheerio = require('cheerio')
+const Cheerio = require('cheerio');
+const { formatCurrency } = require('../utils/');
 
 class Investidor10 {
+  constructor(args) {
+    this.valueToInvest = args.valueToInvest || 1000;
+  }
+
+
   async loadPage(link) {
     const response = await axios({ url: link, method: 'GET', responseType: 'arraybuffer' });
     const decodedContent = iconv.decode(response.data, 'utf-8');
@@ -18,9 +21,7 @@ class Investidor10 {
     const tableFII = $("#table-dividends-history")
 
     const columns = [];
-    tableFII.find('thead tr th').each((i, elem) => {
-      columns.push($(elem).text().trim());
-    });
+    tableFII.find('thead tr th').each((i, elem) => { columns.push($(elem).text().trim()); });
 
     const result = [];
     tableFII.find('tbody tr').each((i, elem) => {
@@ -52,13 +53,24 @@ class Investidor10 {
           newItem[key] = value;
         }
       }
-
       return newItem;
     });
   }
 
-  async getDividendsHistory(link) {
-    return await this._sanitizeData(link);
+  async getDividendsHistory(fii) { return this._sanitizeData(fii.Link); }
+
+  async getLastDividend(fii) {
+    const dividends = await this._sanitizeData(fii.Link);
+    const lastDividend = dividends[0]
+    const quotaValue = Number(lastDividend['Valor'].toFixed(2))
+    const countPapelToBuy = Number((this.valueToInvest / fii['Cotação']).toFixed(0));
+    const quotaValueForInvest = countPapelToBuy * quotaValue;
+
+    lastDividend['Qtde de papel'] = countPapelToBuy
+    lastDividend['Valor para investir'] = formatCurrency(this.valueToInvest);
+    lastDividend['Valor'] = formatCurrency(quotaValue);
+    lastDividend['Retorno de dividendos'] = formatCurrency(quotaValueForInvest);
+    return lastDividend
   }
 }
 

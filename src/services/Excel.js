@@ -1,34 +1,39 @@
 const xlsx = require('xlsx');
+const { formatCurrency, formatPercentage } = require('../utils');
 
 class Excel {
-  arrayToSheet(data) {
-    console.log('data', data)
+  arrayToSheet(values) {
+    const data = this._formatData(values)
     const workbook = xlsx.utils.book_new();
-    const worksheetData = data.map(item => ({
-      Papel: item.Papel,
-      Segmento: item.Segmento,
-      'Cotação': item['Cotação'],
-      'FFO Yield': item['FFO Yield'],
-      'Dividend Yield': item['Dividend Yield'],
-      'P/VP': item['P/VP'],
-      'Valor de Mercado': item['Valor de Mercado'],
-      Liquidez: item.Liquidez,
-      'Qtd de imóveis': item['Qtd de imóveis'],
-      'Preço do m2': item['Preço do m2'],
-      'Aluguel por m2': item['Aluguel por m2'],
-      'Cap Rate': item['Cap Rate'],
-      'Vacância Média': item['Vacância Média'],
-      'Tipo de Dividendo': item?.Dividendos?.Tipo,
-      'Data COM': item && item.Dividendos ? item.Dividendos['Data COM'] : '',
-      'Data de Pagamento': item?.Dividendos?.Pagamento,
-      'Valor do Dividendo': item?.Dividendos?.Valor
-      // 'Endereço': item['Endereço'],
-      // Link: item.Link,
-    }));
-
-    const worksheet = xlsx.utils.json_to_sheet(worksheetData);
+    const worksheet = xlsx.utils.json_to_sheet(data);
     xlsx.utils.book_append_sheet(workbook, worksheet, 'Dados');
-    xlsx.writeFile(workbook, 'fii.xlsx');
+    xlsx.writeFile(workbook, './result/fii.xlsx');
+  }
+
+  _formatData(data) {
+    return data.map(item => {
+      const row = {
+        Papel: item.Papel,
+        Segmento: item.Segmento,
+        'Cotação': formatCurrency(item['Cotação']),
+        'Dividend Yield': formatPercentage(item['Dividend Yield']),
+        'P/VP': formatPercentage(item['P/VP']),
+        'Valor de Mercado': formatCurrency(item['Valor de Mercado']),
+        Liquidez: formatCurrency(item.Liquidez),
+        'Vacância Média': formatPercentage(item['Vacância Média'])
+      };
+
+      if (item && item.Dividendos) {        
+        row['Tipo de dividendo'] = item && item.Dividendos ? item.Dividendos['Tipo'] : 'Não possui';
+        row['Data COM'] = item && item.Dividendos ? item?.Dividendos['Data COM'] : 'Não possui';
+        row['Dividendo'] = item && item.Dividendos ? item.Dividendos['Valor'] : 'Não possui';
+        row['Valor investido'] = item && item.Dividendos['Valor para investir'] ? item.Dividendos['Valor para investir'] : 'Não possui';
+        row['Qtde de papel'] = item && item.Dividendos['Qtde de papel'] ? item.Dividendos['Qtde de papel'] : 'Não possui';
+        row['Retorno de dividendos'] = item && item.Dividendos['Retorno de dividendos'] ? item.Dividendos['Retorno de dividendos'] : 'Não possui';       
+      }
+      row.Link = item.Link;
+      return row;
+    });
   }
 }
 
