@@ -1,5 +1,6 @@
 module.exports = {
   formatCurrency: require('./formatCurrency'),
   formatPercentage: require('./formatPercentage'),
-  roundDownToTwoDecimalPlaces: require('./roundDownToTwoDecimalPlaces')
+  roundDownToTwoDecimalPlaces: require('./roundDownToTwoDecimalPlaces'),
+  sleep: require('./sleep')
 }

@@ -13,20 +13,22 @@ class FII {
     this.url = env.URL_BASE_FII;
   }
   async loadPage() {
+    console.log('Buscando todos os FIIs da página:', env.URL_BASE_FII, '\n')
     const response = await axios({ url: env.URL_BASE_FII, method: 'GET', responseType: 'arraybuffer' });
-    if (response?.data) throw new Error('No data');
-    const decodedContent = iconv.decode(data, 'ISO-8859-1');
+    if (!Buffer.isBuffer(response.data)) throw new Error('Response is not a buffer');
+    const decodedContent = iconv.decode(response.data, 'ISO-8859-1');
     fs.writeFileSync('./mocks/fundamentus-fii.html', decodedContent);
     return true
   }
 
-  async _getPageMock() {
-    const page = await readFileAsync('./mocks/fundamentus-fii.html', 'utf8');
-    return page
+  async _getPage() {
+    // if (!env.mock) this.loadPage();
+    this.loadPage();
+    return await readFileAsync('./mocks/fundamentus-fii.html', 'utf8');
   }
 
   async _transformPageInJson() {
-    const page = await this._getPageMock();
+    const page = await this._getPage();
     const $ = Cheerio.load(page);
     const tableFII = $("#tabelaResultado")
 

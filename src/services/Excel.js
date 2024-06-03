@@ -3,6 +3,7 @@ const { formatCurrency, formatPercentage } = require('../utils');
 
 class Excel {
   arrayToSheet(values) {
+    // const data = values
     const data = this._formatData(values)
     const workbook = xlsx.utils.book_new();
     const worksheet = xlsx.utils.json_to_sheet(data);
